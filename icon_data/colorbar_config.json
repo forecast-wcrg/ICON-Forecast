@@ -1,0 +1,46 @@
+{
+  "T2": {
+    "name": "T2",
+    "display_name": "2m Temperature",
+    "colorbar_min": 4.0,
+    "colorbar_max": 43.0,
+    "unit": "\u00b0C",
+    "cmap": "coolwarm",
+    "icon": "fa-thermometer-half",
+    "use_log_scale": false,
+    "log_linear_threshold": null
+  },
+  "RH": {
+    "name": "RH",
+    "display_name": "Relative Humidity",
+    "colorbar_min": 9.0,
+    "colorbar_max": 97.0,
+    "unit": "%",
+    "cmap": "viridis",
+    "icon": "fa-tint",
+    "use_log_scale": false,
+    "log_linear_threshold": null
+  },
+  "WIND": {
+    "name": "WIND",
+    "display_name": "Wind Speed",
+    "colorbar_min": 0.0,
+    "colorbar_max": 13.0,
+    "unit": "m/s",
+    "cmap": "hot_r",
+    "icon": "fa-wind",
+    "use_log_scale": false,
+    "log_linear_threshold": null
+  },
+  "RAIN": {
+    "name": "RAIN",
+    "display_name": "Hourly Rainfall",
+    "colorbar_min": 0.001,
+    "colorbar_max": 5.734375,
+    "unit": "mm",
+    "cmap": "Blues",
+    "icon": "fa-cloud-rain",
+    "use_log_scale": true,
+    "log_linear_threshold": 1.0
+  }
+}

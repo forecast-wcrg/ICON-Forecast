@@ -1,8 +1,8 @@
 {
   "variable": "T2",
   "display_name": "2m Temperature",
-  "colorbar_min": 4.0,
-  "colorbar_max": 43.0,
+  "colorbar_min": 3.0,
+  "colorbar_max": 42.0,
   "unit": "\u00b0C",
   "percentiles_used": "2-98%",
   "colorbar_size": {

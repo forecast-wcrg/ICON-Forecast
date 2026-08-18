@@ -2,7 +2,7 @@
   "variable": "RAIN",
   "display_name": "Hourly Rainfall",
   "colorbar_min": 0.001,
-  "colorbar_max": 5.171875,
+  "colorbar_max": 5.1875,
   "unit": "mm",
   "percentiles_used": "2-99%",
   "colorbar_size": {

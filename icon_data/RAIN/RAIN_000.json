@@ -182939,7 +182939,7 @@
     ]
   ],
   "colorbar_min": 0.001,
-  "colorbar_max": 4.90625,
+  "colorbar_max": 4.3828125,
   "unit": "mm",
   "variable": "RAIN",
   "forecast_hour": 0,

@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>MausamDrishti Dashboard - ICON Global Forecast | HyperVisual Edition</title>
+    <meta name="theme-color" content="#020a19" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f2f7ff" media="(prefers-color-scheme: light)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
     
     <!-- Auto-refresh: reload page every 6 hours (21600000 ms) to sync forecast start time -->
     <meta http-equiv="refresh" content="21600">
@@ -63,6 +69,21 @@
             --grad-cool: linear-gradient(135deg, #00ffff, #00f0ff);
             --grad-nature: linear-gradient(135deg, #00ffaa, #aaff66);
             --grad-magma: linear-gradient(135deg, #ff7700, #ff44ee);
+
+            /* --- layout tokens (single source of truth for every breakpoint) --- */
+            --topbar-h: clamp(52px, 4.5vw, 70px);
+            --bottombar-h: clamp(54px, 4.8vw, 75px);
+            --panel-gap: clamp(8px, 0.8vw, 15px);
+            --safe-t: env(safe-area-inset-top, 0px);
+            --safe-b: env(safe-area-inset-bottom, 0px);
+            --safe-l: env(safe-area-inset-left, 0px);
+            --safe-r: env(safe-area-inset-right, 0px);
+
+            --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 26px;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+            --shadow-soft: 0 4px 18px rgba(0,0,0,0.28);
+            --hairline: rgba(255,255,255,0.07);
         }
 
         [data-theme="light"] {
@@ -91,13 +112,26 @@
             --shadow-glow: 0 0 15px rgba(0, 100, 255, 0.15);
             --shadow-card: 0 6px 25px rgba(0,0,0,0.12);
         }
+        [data-accent="sunset"] {
+            --accent-sky:#ff9f43; --accent-cyan:#ffd166; --accent-teal:#06d6a0;
+            --accent-violet:#c77dff; --accent-rose:#ff6b8a; --accent-magenta:#ff4d9d; --accent-lime:#caff70;
+            --grad-primary:linear-gradient(135deg,#ff9f43,#ff4d9d,#c77dff); --grad-sky:linear-gradient(135deg,#ffd166,#ff6b8a);
+        }
+        [data-accent="forest"] {
+            --accent-sky:#4dd4ac; --accent-cyan:#76e5c5; --accent-teal:#00b894;
+            --accent-violet:#7c83fd; --accent-rose:#ff8fab; --accent-magenta:#9b5de5; --accent-lime:#d8f878;
+            --grad-primary:linear-gradient(135deg,#4dd4ac,#7c83fd,#9b5de5); --grad-sky:linear-gradient(135deg,#76e5c5,#7c83fd);
+        }
 
         body {
             font-family: var(--font-ui);
             background: #000814;
             color: var(--text-primary);
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
+            overscroll-behavior: none;
+            text-rendering: optimizeLegibility;
             font-size: 17px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
@@ -108,6 +142,13 @@
 
         /* ===== DEVELOPER CREDIT BADGE ===== */
         .github-icon { width: 18px; height: 18px; flex-shrink: 0; }
+        .dev-credit-link .github-icon { display: none; }
+        .dev-credit-link::before { content: "\f19c"; font-family: "Font Awesome 6 Free"; font-weight: 900; }
+        .command-card{position:relative;overflow:hidden}.command-card:before{content:'';position:absolute;inset:0 0 auto;height:2px;background:var(--grad-primary)}
+        .command-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.command-btn{padding:10px 7px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass-bg-light);color:var(--text-secondary);font:700 .74rem var(--font-ui);cursor:pointer}.command-btn i{color:var(--accent-sky)}
+        .favorite-name{display:flex;gap:7px;margin-bottom:9px;color:var(--text-primary);font-weight:800}.favorite-name i{color:var(--accent-gold)}
+        .alert-center{display:flex;gap:10px;padding:10px;border-radius:13px;border:1px solid rgba(170,255,102,.28);background:rgba(170,255,102,.1);color:var(--text-secondary);font-size:.78rem;line-height:1.4}.alert-center i{color:var(--accent-lime)}.alert-center.warning{border-color:rgba(255,170,0,.4);background:rgba(255,170,0,.1)}.alert-center.warning i{color:var(--accent-amber)}
+        .health-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.72rem;color:var(--text-dim)}.health-meter{flex:1;height:6px;border-radius:20px;overflow:hidden;background:var(--glass-bg-light)}.health-meter span{display:block;height:100%;background:var(--grad-nature)}
         .dev-credit-link {
             display: inline-flex; align-items: center; gap: clamp(4px, 0.5vw, 8px);
             text-decoration: none; color: var(--accent-magenta);
@@ -129,7 +170,7 @@
 
         /* ===== FULL SCREEN MAP ===== */
         #map {
-            position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1;
+            position: fixed; inset: 0; width: 100%; height: 100vh; height: 100dvh; z-index: 1;
             filter: saturate(1.1) contrast(1.05);
         }
 
@@ -146,7 +187,7 @@
 
         /* ===== FLOATING TOP BAR ===== */
         .top-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: clamp(52px, 4.5vw, 70px);
+            position: fixed; top: 0; left: 0; right: 0; min-height: var(--topbar-h);
             z-index: 900; display: flex; align-items: center;
             justify-content: space-between; padding: 0 clamp(12px, 1.5vw, 25px);
             background: var(--glass-bg); backdrop-filter: blur(25px) saturate(200%);
@@ -182,16 +223,21 @@
         .time-chip {
             display: flex; align-items: center; gap: clamp(4px, 0.4vw, 8px);
             background: var(--glass-bg-light); border: 1px solid var(--glass-border);
-            border-radius: 40px; padding: clamp(4px, 0.4vw, 8px) clamp(8px, 1vw, 18px);
-            font-family: var(--font-mono); font-size: clamp(0.65rem, 0.7vw, 1.1rem); font-weight: 600;
-            color: var(--text-secondary); white-space: nowrap; flex-shrink: 0;
+            border-radius: 40px; padding: clamp(6px, 0.5vw, 10px) clamp(11px, 1vw, 20px);
+            font-family: var(--font-mono); font-size: clamp(0.78rem, 0.82vw, 1.15rem); font-weight: 700;
+            color: #f3f8ff; white-space: nowrap; flex-shrink: 0; box-shadow: 0 4px 16px rgba(0,0,0,.18);
         }
         .time-chip .dot {
             width: 10px; height: 10px; background: var(--accent-lime);
             border-radius: 50%; animation: pulse-dot 2s infinite; flex-shrink: 0;
         }
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
-        .time-chip span { color: var(--accent-sky); font-weight: 800; }
+        .time-chip span { color: #8ff7ff; font-weight: 900; }
+        .time-chip .chip-label { color:#d8e8f7; font-weight:700; }
+        .time-chip .chip-value { color:#8ff7ff; font-weight:900; }
+        [data-theme="light"] .time-chip { color:#10243b; }
+        [data-theme="light"] .time-chip .chip-label { color:#284967; }
+        [data-theme="light"] .time-chip .chip-value { color:#005dcc; }
 
         .top-bar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
@@ -203,12 +249,26 @@
             transition: all 0.25s; font-size: clamp(1.1rem, 1.4vw, 2rem);
         }
         .icon-btn:hover { background: var(--accent-sky); color: #000; border-color: var(--accent-sky); transform: scale(1.1); }
+        .icon-btn[aria-pressed="true"] { background:var(--accent-sky); color:#000; border-color:var(--accent-sky); }
+        .palette-btn { position:relative; overflow:hidden; }
+        .palette-btn::after { content:''; width:12px; height:12px; border-radius:50%; background:linear-gradient(135deg,var(--accent-sky),var(--accent-magenta)); position:absolute; right:5px; bottom:5px; border:1px solid rgba(255,255,255,.7); }
+        .insight-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--glass-border); }
+        .insight-item { min-width:0; }
+        .insight-label { color:var(--text-dim); font-size:.58rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+        .insight-value { color:var(--text-primary); font-family:var(--font-mono); font-size:.82rem; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .weather-pulse { display:flex; align-items:center; gap:8px; margin-top:10px; padding:9px 11px; border-radius:12px; color:var(--text-secondary); background:linear-gradient(100deg,rgba(0,240,255,.1),rgba(204,102,255,.12)); border:1px solid var(--glass-border); font-size:.75rem; font-weight:700; }
+        .weather-pulse i { color:var(--accent-gold); }
 
         /* ===== LEFT PANEL ===== */
+        /* wrapper is transparent on desktop, becomes the bottom sheet on small screens */
+        #panelsWrap { display: contents; }
+        .sheet-scroll { display: contents; }
+        .sheet-grabber { display: none; }
+
         .left-panel {
-            position: fixed; top: clamp(58px, 5vw, 86px); left: clamp(8px, 1vw, 20px);
+            position: fixed; top: calc(var(--topbar-h) + 14px); left: max(clamp(8px, 1vw, 20px), var(--safe-l));
             width: clamp(210px, 18vw, 320px);
-            max-height: calc(100vh - clamp(58px, 5vw, 86px) - clamp(54px, 4.8vw, 75px) - 10px); z-index: 800;
+            max-height: calc(100dvh - var(--topbar-h) - var(--bottombar-h) - 26px); z-index: 800;
             display: flex; flex-direction: column; gap: clamp(8px, 0.8vw, 15px);
             overflow-y: auto; overflow-x: hidden; padding-right: 5px; padding-bottom: 8px;
             scrollbar-width: thin; scrollbar-color: var(--accent-sky) transparent;
@@ -218,9 +278,9 @@
 
         /* ===== RIGHT PANEL ===== */
         .right-panel {
-            position: fixed; top: clamp(58px, 5vw, 86px); right: clamp(8px, 1vw, 20px);
+            position: fixed; top: calc(var(--topbar-h) + 14px); right: max(clamp(8px, 1vw, 20px), var(--safe-r));
             width: clamp(195px, 17vw, 300px);
-            max-height: calc(100vh - clamp(58px, 5vw, 86px) - clamp(54px, 4.8vw, 75px) - 10px); z-index: 800;
+            max-height: calc(100dvh - var(--topbar-h) - var(--bottombar-h) - 26px); z-index: 800;
             display: flex; flex-direction: column; gap: clamp(8px, 0.8vw, 15px);
             overflow-y: auto; overflow-x: hidden; padding-left: 5px; padding-bottom: 8px;
             scrollbar-width: thin; scrollbar-color: var(--accent-magenta) transparent;
@@ -324,12 +384,23 @@
             font-size: 0.78rem; color: var(--text-dim); font-family: var(--font-mono);
             margin-bottom: 10px; font-weight: 600;
         }
+        /* Slides horizontally when the panel is too narrow for all four tiles. */
         .cond-grid {
-            display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px;
+            display: flex; gap: 6px;
+            overflow-x: auto; overflow-y: hidden;
+            padding-bottom: 5px;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+            scrollbar-width: thin; scrollbar-color: var(--accent-sky) transparent;
         }
+        .cond-grid::-webkit-scrollbar { height: 4px; }
+        .cond-grid::-webkit-scrollbar-track { background: transparent; }
+        .cond-grid::-webkit-scrollbar-thumb { background: var(--accent-sky); border-radius: 10px; }
         .cond-item {
             background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
             border-radius: 12px; padding: 8px 4px; text-align: center; backdrop-filter: blur(5px);
+            flex: 1 0 auto; min-width: 62px; scroll-snap-align: start;
         }
         [data-theme="light"] .cond-item { background: rgba(0,0,0,0.04); }
         .cond-icon { font-size: 1.1rem; margin-bottom: 3px; }
@@ -440,7 +511,7 @@
 
         /* ===== BOTTOM BAR ===== */
         .bottom-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; height: clamp(54px, 4.8vw, 75px); z-index: 900;
+            position: fixed; bottom: 0; left: 0; right: 0; min-height: var(--bottombar-h); z-index: 900;
             background: var(--glass-bg); backdrop-filter: blur(25px) saturate(180%);
             border-top: 1px solid var(--glass-border-bright);
             box-shadow: 0 -2px 20px rgba(0,0,0,0.3);
@@ -689,6 +760,37 @@
         .leaflet-control-zoom a:hover { background: var(--accent-sky) !important; color: #000 !important; }
         .leaflet-control-attribution { display: none !important; }
 
+        /* Dark theme and map-detail level are both applied here, to the tile pane
+           only. The forecast overlay lives in .leaflet-overlay-pane and markers in
+           .leaflet-marker-pane, so neither is touched. JS sets the two variables. */
+        .leaflet-tile-pane {
+            opacity: var(--bm-opacity, 1);
+            filter: var(--bm-filter, none);
+            transition: opacity .3s var(--ease), filter .3s var(--ease);
+        }
+
+        /* ===== SEGMENTED CONTROL ===== */
+        .seg-group {
+            display: flex; gap: 4px; padding: 4px;
+            background: var(--glass-bg-light); border: 1px solid var(--glass-border);
+            border-radius: clamp(10px, 0.8vw, 16px);
+        }
+        .seg-btn {
+            flex: 1 1 0; min-width: 0; border: none; background: transparent;
+            color: var(--text-dim); font-family: var(--font-ui); font-weight: 800;
+            font-size: clamp(0.62rem, 0.66vw, 0.82rem);
+            padding: clamp(6px, 0.5vw, 10px) 4px; border-radius: clamp(7px, 0.6vw, 12px);
+            cursor: pointer; transition: all .22s var(--ease); white-space: nowrap;
+            letter-spacing: 0.02em;
+        }
+        .seg-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.07); }
+        .seg-btn.active {
+            background: var(--grad-sky); color: #000;
+            box-shadow: 0 2px 10px rgba(0,240,255,0.25);
+        }
+        [data-theme="light"] .seg-btn:hover { background: rgba(0,60,140,0.07); }
+        [data-theme="light"] .seg-btn.active { box-shadow: 0 2px 10px rgba(0,100,255,0.2); }
+
         /* scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -729,52 +831,299 @@
         .left-panel .conditions-card::-webkit-scrollbar-thumb { background: var(--accent-sky); border-radius: 10px; }
         .right-panel .glass-card { overflow: visible; }
 
-        /* ===== RESPONSIVE ===== */
+        /* ================================================================
+           REFINEMENTS - visual polish, applied on top of the base rules
+           ================================================================ */
+        .glass-card, .conditions-card {
+            box-shadow: var(--shadow-card);
+            transition: border-color .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+        }
+        .glass-card:hover, .conditions-card:hover { box-shadow: var(--shadow-card), var(--shadow-glow); }
+
+        .card-title { position: relative; }
+        .card-title::after {
+            content: ''; position: absolute; left: 0; bottom: -1px; width: 42px; height: 2px;
+            border-radius: 2px; background: var(--grad-primary); opacity: .9;
+        }
+
+        .cond-item { transition: transform .22s var(--ease), border-color .22s var(--ease); }
+        .cond-item:hover { transform: translateY(-2px); border-color: var(--glass-border-bright); }
+
+        .forecast-item { transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease); }
+        .forecast-item.current-hour {
+            background: linear-gradient(160deg, rgba(0,240,255,.20), rgba(204,102,255,.12));
+            border-color: var(--accent-sky); box-shadow: 0 0 0 1px rgba(0,240,255,.25) inset;
+        }
+        .forecast-item:hover { transform: translateY(-2px); }
+
+        .search-result-item { transition: background .18s var(--ease), padding-left .18s var(--ease); }
+        .search-result-item:hover { padding-left: 22px; }
+
+        button, .bottom-link, .styled-select, .search-input { -webkit-tap-highlight-color: transparent; }
+        button:active, .bottom-link:active, .reset-map-btn:active { transform: scale(.96); }
+
+        :is(button, a, select, input):focus-visible {
+            outline: 2px solid var(--accent-sky); outline-offset: 2px; border-radius: var(--r-sm);
+        }
+
+        .leaflet-container { background: #000814; }
+        [data-theme="light"] .leaflet-container { background: #e8eef6; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important; scroll-behavior: auto !important;
+            }
+        }
+
+        /* .attribution is used by the basemap credit line; GFS-Forecast has no
+           copy of these rules, so they are defined here for every build. */
+        .attribution {
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim); text-align: center; line-height: 1.5;
+        }
+        .attribution a { color: var(--accent-sky); text-decoration: none; font-weight: 700; }
+        .attribution a:hover { text-decoration: underline; }
+
+        /* ================================================================
+           RESPONSIVE SYSTEM
+           Desktop (>1100px)  : original two-rail layout, untouched
+           Laptop  (900-1100) : rails narrowed, non-essential chrome dropped
+           Tablet/Phone (<900): rails collapse into a draggable bottom sheet
+           ================================================================ */
+
+        @media (min-width: 2200px) { body { font-size: 19px; } }
+
+        /* ---------- large laptops ---------- */
+        @media (max-width: 1400px) {
+            .left-panel  { width: clamp(200px, 19vw, 290px); }
+            .right-panel { width: clamp(186px, 17.5vw, 265px); }
+        }
+
+        @media (max-width: 1240px) {
+            .top-bar-center .time-chip:nth-child(4) { display: none; }
+            .map-tip-right-pill { display: none; }
+        }
+
+        /* ---------- small laptops / large tablets in landscape ---------- */
         @media (max-width: 1100px) {
             .logo-sub { display: none; }
-            .top-bar-center .time-chip:nth-child(3),
-            .top-bar-center .time-chip:nth-child(4) { display: none; }
-            .map-tip-left-pill, .map-tip-right-pill { display: none; }
+            .top-bar-center .time-chip:nth-child(3) { display: none; }
+            .map-tip-left-pill { display: none; }
+            .left-panel  { width: min(34vw, 250px); }
+            .right-panel { width: min(30vw, 225px); }
+            .map-tips-row { max-width: calc(100vw - 540px); }
+            .chart-modal-content { width: 96%; padding: 22px; }
+            .chart-container { height: 380px; }
         }
+
         @media (max-width: 960px) {
             .map-tips-row { display: none; }
             .watermark { display: none; }
         }
-        @media (max-width: 768px) {
-            body { font-size: 14px; overflow: auto; height: auto; }
-            #map { position: fixed; height: 100vh; }
-            .top-bar { height: auto; min-height: 52px; padding: 7px 12px; flex-wrap: wrap; gap: 5px; }
-            .top-bar-center { order: 3; width: 100%; justify-content: flex-start; padding: 0; gap: 5px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 3px; }
+
+        /* ================================================================
+           <= 900px : BOTTOM SHEET LAYOUT
+           ================================================================ */
+        @media (max-width: 900px) {
+            :root { --bb-h: 84px; }
+
+            body { font-size: 15px; height: 100dvh; overflow: hidden; }
+            #map { height: 100dvh; }
+
+            /* ---- top bar ---- */
+            .top-bar {
+                min-height: 0; height: auto; flex-wrap: wrap; gap: 6px;
+                padding: 8px 12px 6px; padding-top: calc(8px + var(--safe-t));
+                padding-left: max(12px, var(--safe-l)); padding-right: max(12px, var(--safe-r));
+            }
+            .top-bar-left { gap: 10px; }
+            .logo-mark { width: 38px; height: 38px; font-size: 1.35rem; border-radius: 12px; }
+            .logo-text { font-size: 1.15rem; }
+            .logo-sub { display: block; font-size: .62rem; }
+            .top-bar-center {
+                order: 3; width: 100%; justify-content: flex-start; padding: 2px 0 0;
+                gap: 6px; overflow-x: auto; scrollbar-width: none;
+                -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity;
+            }
             .top-bar-center::-webkit-scrollbar { display: none; }
-            .logo-sub { display: none; }
-            .left-panel { position: fixed; top: auto; bottom: 60px; left: 0; right: 0; width: 100%; max-height: 55vh; flex-direction: row; gap: 10px; overflow-x: auto; overflow-y: hidden; padding: 8px 10px 5px; scrollbar-width: none; z-index: 800; flex-wrap: nowrap; align-items: flex-start; }
-            .left-panel::-webkit-scrollbar { display: none; }
-            .left-panel > * { min-width: 250px; flex-shrink: 0; max-height: 50vh; overflow-y: auto; }
-            .right-panel { position: fixed; top: auto; bottom: 60px; right: 0; width: 100%; max-height: 55vh; flex-direction: row; gap: 10px; overflow-x: auto; overflow-y: hidden; padding: 8px 10px 5px; scrollbar-width: none; z-index: 799; flex-wrap: nowrap; align-items: flex-start; display: none; }
-            .right-panel::-webkit-scrollbar { display: none; }
-            .right-panel > * { min-width: 215px; flex-shrink: 0; max-height: 50vh; overflow-y: auto; }
-            .map-tips-row { display: none; }
-            .watermark { display: none; }
-            .location-badge { font-size: 0.78rem; padding: 7px 14px; top: auto; bottom: 68px; left: 50%; }
-            .mobile-panel-toggle { display: flex !important; position: fixed; bottom: 66px; right: 10px; z-index: 900; flex-direction: column; gap: 6px; }
-            .mobile-toggle-btn { width: 36px; height: 36px; background: var(--glass-bg); border: 1px solid var(--glass-border-bright); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--accent-sky); font-size: 0.95rem; backdrop-filter: blur(12px); box-shadow: 0 2px 10px rgba(0,0,0,0.4); transition: all 0.2s; }
-            .mobile-toggle-btn:hover, .mobile-toggle-btn.active { background: var(--accent-sky); color: #000; border-color: var(--accent-sky); }
-            .chart-modal-content { margin: 0; width: 100%; max-width: 100%; border-radius: 20px 20px 0 0; padding: 18px 14px; position: fixed; bottom: 0; max-height: 92vh; }
-            .chart-container { height: 260px; }
-            .chart-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .stat-value { font-size: 1.1rem; }
+            .top-bar-center .time-chip { display: flex !important; font-size: .68rem; padding: 5px 12px; scroll-snap-align: start; }
+            .icon-btn { width: 44px; height: 44px; font-size: 1.15rem; border-radius: 14px; }
+
+            /* ---- leaflet zoom out of the sheet's way ---- */
+            .leaflet-bottom.leaflet-right { bottom: auto; top: 0; }
+            .leaflet-control-zoom { margin: 8px 10px 0 0 !important; }
+            .leaflet-control-zoom a { width: 38px !important; height: 38px !important; line-height: 38px !important; }
+
+            .map-tips-row, .watermark { display: none; }
+
+            /* ---- the sheet ---- */
+            #panelsWrap {
+                display: flex; flex-direction: column;
+                position: fixed; left: 0; right: 0;
+                bottom: calc(var(--bb-h) + var(--safe-b));
+                height: 58dvh;                       /* JS refines this in px */
+                z-index: 860;
+                background: var(--glass-bg);
+                backdrop-filter: blur(18px) saturate(170%);
+                -webkit-backdrop-filter: blur(18px) saturate(170%);
+                border: 1px solid var(--glass-border-bright); border-bottom: none;
+                border-radius: var(--r-xl) var(--r-xl) 0 0;
+                box-shadow: 0 -14px 38px rgba(0,0,0,.5);
+                transform: translateY(var(--sheet-y, 42%)); /* pre-JS resting position */
+                transition: transform .34s var(--ease-sheet);
+                will-change: transform;
+            }
+            #panelsWrap.dragging { transition: none; }
+
+            .sheet-grabber {
+                display: flex; flex-direction: column; align-items: center; gap: 8px;
+                padding: 9px 14px 10px; flex-shrink: 0; cursor: grab;
+                touch-action: none; user-select: none; -webkit-user-select: none;
+            }
+            .sheet-grabber:active { cursor: grabbing; }
+            .sheet-grabber .grab-bar {
+                width: 46px; height: 5px; border-radius: 99px;
+                background: var(--glass-border-bright); flex-shrink: 0;
+            }
+            .sheet-peek {
+                display: flex; align-items: center; gap: 8px; width: 100%;
+                font-size: .78rem; font-weight: 700; color: var(--text-secondary);
+                min-width: 0;
+            }
+            .sheet-peek .pk {
+                display: flex; align-items: center; gap: 6px; min-width: 0;
+                background: var(--glass-bg-light); border: 1px solid var(--glass-border);
+                border-radius: 99px; padding: 5px 12px; white-space: nowrap;
+                overflow: hidden; text-overflow: ellipsis;
+            }
+            .sheet-peek .pk i { color: var(--accent-rose); font-size: .75rem; flex-shrink: 0; }
+            .sheet-peek #peekLoc { overflow: hidden; text-overflow: ellipsis; }
+            .sheet-peek #peekTemp { color: var(--accent-lime); font-family: var(--font-mono); }
+            .sheet-peek .pk-chev { margin-left: auto; color: var(--accent-sky); transition: transform .3s var(--ease); flex-shrink: 0; }
+            #panelsWrap[data-state="full"] .pk-chev { transform: rotate(180deg); }
+
+            .sheet-scroll {
+                display: flex; flex-direction: column; gap: 10px; flex: 1;
+                overflow-y: auto; overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                padding: 0 max(12px, var(--safe-l)) 16px max(12px, var(--safe-r));
+            }
+
+            .left-panel, .right-panel {
+                position: static; width: auto; max-height: none; z-index: auto;
+                display: flex; flex-direction: column; gap: 10px;
+                overflow: visible; padding: 0;
+            }
+            .left-panel .glass-card, .left-panel .conditions-card,
+            .right-panel .glass-card { overflow: visible; max-height: none; }
+            .glass-card, .conditions-card { padding: 14px; border-radius: var(--r-lg); }
+
+            /* touch-sized controls inside the sheet */
+            .search-input, .styled-select { padding: 12px 14px; font-size: .92rem; }
+            .styled-select { padding-right: 38px; }
+            .search-btn, .geo-btn { padding: 12px 16px; min-width: 48px; justify-content: center; }
+            .seg-btn { padding: 11px 6px; font-size: .78rem; }
+            .search-results { max-height: 46dvh; }
+            .cond-grid { gap: 8px; }
+            .cond-item { padding: 10px 4px; }
+            .cond-val { font-size: .95rem; }
+            .forecast-item { min-width: 66px; padding: 10px 6px; }
+            .bottom-link { padding: 12px 14px; font-size: .85rem; }
+
+            /* ---- bottom bar: colour bar on top, transport below ---- */
+            .bottom-bar {
+                height: auto; min-height: var(--bb-h);
+                flex-direction: column; align-items: stretch; gap: 6px;
+                padding: 7px max(10px, var(--safe-l)) calc(7px + var(--safe-b)) max(10px, var(--safe-r));
+            }
+            .bottom-left {
+                width: 100%; order: 2; border-right: none; padding-right: 0;
+                justify-content: center; gap: 8px;
+            }
+            .bottom-right { width: 100%; order: 1; flex: none; padding-left: 0; }
+            .bottom-divider { display: none; }
+            .colorbar-strip { height: 30px; border-radius: var(--r-sm); }
+            .var-emoji { font-size: 1.3rem; }
+            .var-name { font-size: .9rem; }
+            .var-unit-badge { font-size: .68rem; padding: 3px 9px; }
+            .nav-btn { width: 42px; height: 42px; font-size: 1rem; border-radius: 13px; }
+            .play-btn { min-width: 96px; padding: 11px 16px; font-size: .82rem; border-radius: 14px; }
+            #timeLabel { font-size: .8rem; padding: 6px 11px; min-width: 64px; }
+
+            /* the sheet's peek row already names the location */
+            .location-badge { display: none !important; }
+
+            /* ---- chart modal as a full-height sheet ---- */
+            .chart-modal-content {
+                margin: 0; width: 100%; max-width: 100%; position: fixed; bottom: 0; left: 0;
+                border-radius: var(--r-xl) var(--r-xl) 0 0;
+                padding: 18px 14px calc(18px + var(--safe-b));
+                max-height: 94dvh;
+            }
+            .chart-modal-header { margin-bottom: 16px; padding-bottom: 12px; }
             .chart-modal-title { font-size: 1.1rem; }
-            .chart-btn { padding: 9px 14px; font-size: 0.78rem; gap: 6px; }
-        }
-        @media (max-width: 480px) {
-            .top-bar-center .time-chip:nth-child(3), .top-bar-center .time-chip:nth-child(4) { display: none; }
-            .left-panel > * { min-width: 230px; }
-            .right-panel > * { min-width: 195px; }
-            .var-name { display: none; }
-            .chart-container { height: 210px; }
+            .chart-modal-subtitle { font-size: .8rem; }
+            .chart-modal-close { width: 44px; height: 44px; font-size: 1.6rem; }
+            .chart-stats { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+            .stat-item { padding: 12px; border-radius: var(--r-md); }
+            .stat-value { font-size: 1.05rem; }
+            .stat-label { font-size: .68rem; margin-bottom: 6px; }
+            .stat-subvalue { font-size: .68rem; }
+            .chart-container { height: 46dvh; min-height: 240px; padding: 10px; margin: 12px 0; }
+            .chart-watermark { display: none; }
+            .chart-tip { font-size: .76rem; padding: 10px 14px; }
+            .chart-controls { flex-direction: column; align-items: stretch; gap: 10px; }
+            .chart-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .chart-buttons:last-child { grid-template-columns: 1fr; }
+            .chart-btn { padding: 13px 12px; font-size: .82rem; justify-content: center; }
         }
 
-        .mobile-panel-toggle { display: none; }
+        /* ---------- narrow phones ---------- */
+        @media (max-width: 560px) {
+            .var-name { display: none; }
+            .logo-text { font-size: 1.05rem; }
+            .search-row { flex-wrap: wrap; }
+            .search-input { flex: 1 1 100%; }
+            .search-btn, .geo-btn { flex: 1; }
+        }
+        @media (max-width: 380px) {
+            :root { --bb-h: 80px; }
+            body { font-size: 14px; }
+            .chart-stats { grid-template-columns: 1fr; }
+            .play-btn { min-width: 84px; padding: 10px 12px; }
+        }
+
+        /* ---------- phones held sideways: keep the map dominant ---------- */
+        @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+            :root { --bb-h: 56px; }
+            .bottom-bar { flex-direction: row; align-items: center; gap: 10px; }
+            .bottom-left { width: auto; order: 1; }
+            .bottom-right { order: 2; flex: 1; }
+            .colorbar-strip { height: 34px; }
+            .top-bar-center { display: none; }
+            .chart-container { height: 52dvh; min-height: 180px; }
+            .chart-stats { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* ---------- coarse pointers: no hover-only affordances ---------- */
+        @media (hover: none) {
+            .glass-card:hover, .conditions-card:hover { transform: none; box-shadow: var(--shadow-card); }
+            .cond-item:hover, .forecast-item:hover { transform: none; }
+            .search-result-item:hover { padding-left: 18px; }
+            .icon-btn:hover, .nav-btn:hover { transform: none; }
+        }
+        
+        /* Auto-refresh countdown indicator */
+        .refresh-indicator {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-left: 8px;
+            font-family: var(--font-mono);
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
         
         /* Auto-refresh countdown indicator */
         .refresh-indicator {
@@ -806,16 +1155,33 @@
         </div>
 
         <div class="top-bar-center">
-            <div class="time-chip"><div class="dot"></div>Forecast Start: <span id="fcStart">Loading...</span></div>
-            <div class="time-chip">Current Time: <span id="fcValid">Loading...</span></div>
-            <div class="time-chip">FH&nbsp;<span id="currentFH">0</span>/<span id="totalFH">180</span></div>
-            <div class="time-chip"><span id="currentDateTime">--</span>&nbsp;IST</div>
+            <div class="time-chip"><div class="dot"></div><span class="chip-label">Forecast start time</span><span class="chip-value" id="fcStart">Loading...</span></div>
+            <div class="time-chip"><span class="chip-label">Forecast current time</span><span class="chip-value" id="fcValid">Loading...</span></div>
+            <div class="time-chip"><span class="chip-label">FH</span>&nbsp;<span class="chip-value" id="currentFH">0</span>/<span class="chip-value" id="totalFH">180</span></div>
+            <div class="time-chip"><span class="chip-value" id="currentDateTime">--</span>&nbsp;<span class="chip-label">IST</span></div>
         </div>
 
         <div class="top-bar-right">
+            <button id="fullscreenToggle" class="icon-btn" title="Focus mode" aria-label="Toggle fullscreen map"><i class="fas fa-expand"></i></button>
+            <button id="paletteToggle" class="icon-btn palette-btn" title="Change accent color" aria-label="Change accent color"><i class="fas fa-palette"></i></button>
             <button id="themeToggle" class="icon-btn" title="Toggle Theme"><i class="fas fa-moon"></i></button>
         </div>
     </header>
+
+    <!-- PANEL WRAPPER: transparent on desktop, bottom sheet on small screens -->
+    <div id="panelsWrap" data-state="half">
+
+      <div class="sheet-grabber" id="sheetGrabber" role="button" tabindex="0"
+           aria-label="Expand or collapse the details panel" aria-expanded="false">
+        <div class="grab-bar"></div>
+        <div class="sheet-peek">
+            <span class="pk"><i class="fas fa-map-pin"></i><span id="peekLoc">Location</span></span>
+            <span class="pk"><span id="peekTemp">--</span></span>
+            <i class="fas fa-chevron-up pk-chev"></i>
+        </div>
+      </div>
+
+      <div class="sheet-scroll" id="sheetScroll">
 
     <!-- LEFT PANEL -->
     <div class="left-panel">
@@ -856,6 +1222,8 @@
                     <div class="cond-label">Rain</div>
                 </div>
             </div>
+            <div class="insight-strip" aria-label="Forecast summary"><div class="insight-item"><div class="insight-label">24h low</div><div class="insight-value" id="forecastMin">--</div></div><div class="insight-item"><div class="insight-label">24h high</div><div class="insight-value" id="forecastMax">--</div></div><div class="insight-item"><div class="insight-label">Outlook</div><div class="insight-value" id="forecastTrend">--</div></div></div>
+            <div class="weather-pulse" id="weatherPulse"><i class="fas fa-sparkles"></i><span>Choose a location to see the forecast pulse.</span></div>
             <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--glass-border);">
                 <div class="forecast-header-row">
                     <div class="card-title" style="margin-bottom:0; border:none; padding:0; font-size:0.8rem;">
@@ -889,6 +1257,14 @@
                     <option value="2">2× Fast</option>
                     <option value="3">3× Very Fast</option>
                 </select>
+            </div>
+            <div class="control-group" style="margin-bottom:0;">
+                <div class="ctrl-label"><i class="fas fa-layer-group"></i> Map Detail</div>
+                <div class="seg-group" id="detailSeg" role="group" aria-label="Basemap detail level">
+                    <button type="button" class="seg-btn" data-detail="clean"  title="Minimal roads and labels">Clean</button>
+                    <button type="button" class="seg-btn" data-detail="medium" title="Balanced background detail">Medium</button>
+                    <button type="button" class="seg-btn" data-detail="heavy"  title="Full street network">Heavy</button>
+                </div>
             </div>
         </div>
     </div>
@@ -931,6 +1307,7 @@
             <div style="margin-top:10px; text-align:center; font-size:0.72rem; color:var(--text-dim); font-family:var(--font-mono);">
                 © <span id="currentYear"></span> weatherxplorers.com
             </div>
+            <div id="basemapAttribution" class="attribution" style="margin-top:8px; padding-top:8px; font-size:0.66rem;"></div>
         </div>
 
         <div class="glass-card">
@@ -951,7 +1328,21 @@
                 <span id="status">Click on map for timeseries</span>
             </div>
         </div>
+        <div class="glass-card command-card"><div class="card-title"><i class="fas fa-satellite-dish"></i> Weather Center</div><div class="favorite-name"><i class="fas fa-star"></i><span id="favoriteLocation">No saved location</span></div><div class="command-grid"><button id="favoriteBtn" class="command-btn"><i class="far fa-star"></i> Save place</button><button id="shareBtn" class="command-btn"><i class="fas fa-share-nodes"></i> Share view</button><button id="copyCoordsBtn" class="command-btn"><i class="fas fa-copy"></i> Copy coords</button><button id="clearFavoriteBtn" class="command-btn"><i class="fas fa-rotate-left"></i> Clear saved</button></div><div id="commandFeedback" class="coord-copy"></div><div class="health-row">Forecast health<div class="health-meter"><span id="forecastHealth"></span></div><strong id="forecastHealthLabel">Ready</strong></div></div>
+        <div class="glass-card"><div class="card-title"><i class="fas fa-triangle-exclamation"></i> Alert Center</div><div id="alertCenter" class="alert-center"><i class="fas fa-circle-check"></i><span>Choose a location to calculate local weather alerts.</span></div></div>
+        <div class="glass-card developer-credit-card">
+            <div class="card-title"><i class="fas fa-code"></i> Dashboard Credits</div>
+            <div style="text-align:center; color:var(--text-dim); font-size:.76rem; line-height:1.5;">
+                Designed, Developed &amp; Maintained by<br>
+                <a href="https://singhshiwam.github.io/" target="_blank" rel="noopener" style="color:var(--accent-pink); font-weight:800; text-decoration:none;">
+                    <i class="fas fa-user-gear"></i> Shiwam Singh
+                </a>
+            </div>
+        </div>
     </div>
+
+      </div><!-- /.sheet-scroll -->
+    </div><!-- /#panelsWrap -->
 
     <!-- LOCATION BADGE -->
     <div id="locationBadge" class="location-badge" style="display:none;">
@@ -961,13 +1352,6 @@
 
     <!-- 3 PILLS ROW -->
     <div class="map-tips-row">
-        <div class="map-pill map-tip-left-pill">
-            <a href="http://www.weatherxplorers.com" target="_blank" rel="noopener" class="iit-credit-link">
-                <i class="fas fa-university"></i>
-                CoEDMM, IIT Roorkee
-            </a>
-        </div>
-
         <div class="map-pill map-tip">
             <i class="fas fa-mouse-pointer"></i> Click map → timeseries
             <span class="kbd">Space</span>
@@ -977,17 +1361,11 @@
         </div>
 
         <div class="map-pill map-tip-right-pill">
-            <span style="font-size:0.85rem;color:var(--text-dim);font-weight:600;">Developed & Maintained by</span>
+            <span style="font-size:0.85rem;color:var(--text-dim);font-weight:600;">Presented by</span>
             <a href="https://iitr.ac.in/Centres/Centre%20of%20Excellence%20in%20Disaster%20Mitigation%20and%20Management/Home.html" target="_blank" class="dev-credit-link">
-                <strong>CoEDMM</strong>
+                <strong>CoEDMM, IIT Roorkee</strong>
             </a>
         </div>
-    </div>
-
-    <!-- MOBILE PANEL TOGGLE -->
-    <div class="mobile-panel-toggle" id="mobilePanelToggle">
-        <button class="mobile-toggle-btn active" id="mobileLeftBtn" title="Left Panel"><i class="fas fa-layer-group"></i></button>
-        <button class="mobile-toggle-btn" id="mobileRightBtn" title="Right Panel"><i class="fas fa-chart-bar"></i></button>
     </div>
 
     <!-- BOTTOM BAR -->
@@ -1050,7 +1428,22 @@
     <script>
         // ==================== CONFIGURATION ====================
         const CONFIG = {
-            forecastStart: new Date("2026-09-11T05:30:00+05:30"),
+            // ---------------------------------------------------------------
+            // BASEMAP
+            // CARTO began watermarking their keyless raster tiles ("API KEY
+            // REQUIRED") in late Aug 2026 and is retiring the raster service.
+            //   - Leave cartoApiKey empty  -> keyless OpenStreetMap tiles,
+            //     darkened with a CSS filter for the dark theme.
+            //   - Paste a free key from carto.com/basemaps/apikey -> the
+            //     original dark_all / light_all styling comes back, with
+            //     Latin place names instead of local scripts.
+            // The key is public either way; it is served to every visitor.
+            // detail: "clean" | "medium" | "heavy" - how much road/label
+            // clutter shows under the forecast overlay (Controls card).
+            // ---------------------------------------------------------------
+            basemap: { cartoApiKey: "", detail: "medium" },
+
+            forecastStart: new Date("2026-09-09T05:30:00+05:30"),
             baseFrameTime: 1000,
             debugMode: true,
             gfsBounds: [[5, 42], [40.0, 123.0]],
@@ -1115,6 +1508,7 @@
             isPlaying: false, timer: null, currentSpeed: 1.0, isDataLoaded: false, lastClickPos: null,
             map: null, baseLayer: null, markers: { clickMarker: null, boundaryLayer: null, locationMarker: null },
             currentTheme: 'dark',
+            basemapDetail: localStorage.getItem('wrfBasemapDetail') || 'medium',
             timeseriesData: { lat: null, lon: null, gridI: null, gridJ: null, variable: null, values: [], hours: [], timestamps: [] },
             chartInstance: null, isLoadingTimeseries: false, currentLocation: null, locationName: null,
             searchTimeout: null, hourlyForecastData: {}, defaultLocationPreloaded: false,
@@ -1148,6 +1542,8 @@
             status: document.getElementById("status"),
             statusIcon: document.getElementById("statusDot"),
             themeToggle: document.getElementById("themeToggle"),
+            fullscreenToggle: document.getElementById("fullscreenToggle"),
+            paletteToggle: document.getElementById("paletteToggle"),
             chartModal: document.getElementById("chartModal"),
             chartTitle: document.getElementById("chartTitle"),
             chartSubtitle: document.getElementById("chartSubtitle"),
@@ -1171,13 +1567,17 @@
             currentHumidity: document.getElementById("currentHumidity"),
             currentWind: document.getElementById("currentWind"),
             currentRain: document.getElementById("currentRain"),
+            forecastMin: document.getElementById("forecastMin"),
+            forecastMax: document.getElementById("forecastMax"),
+            forecastTrend: document.getElementById("forecastTrend"),
+            weatherPulse: document.getElementById("weatherPulse"),
             locationBadge: document.getElementById("locationBadge"),
             badgeLocation: document.getElementById("badgeLocation"),
             hourlyForecast: document.getElementById("hourlyForecast"),
             forecastVariableBadge: document.getElementById("forecastVariableBadge"),
             currentDateTime: document.getElementById("currentDateTime"),
             globalPreloader: document.getElementById("globalPreloader"),
-            preloaderFill: document.getElementById("preloaderFill")
+            preloaderFill: document.getElementById("preloaderFill"), favoriteLocation: document.getElementById("favoriteLocation"), favoriteBtn: document.getElementById("favoriteBtn"), shareBtn: document.getElementById("shareBtn"), copyCoordsBtn: document.getElementById("copyCoordsBtn"), clearFavoriteBtn: document.getElementById("clearFavoriteBtn"), commandFeedback: document.getElementById("commandFeedback"), forecastHealth: document.getElementById("forecastHealth"), forecastHealthLabel: document.getElementById("forecastHealthLabel"), alertCenter: document.getElementById("alertCenter")
         };
 
         document.getElementById('currentYear').textContent = new Date().getFullYear();
@@ -1263,28 +1663,198 @@
             const icon = elements.themeToggle.querySelector('i');
             icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
+        function updateFullscreenIcon() {
+            const icon = elements.fullscreenToggle?.querySelector('i');
+            if (!icon) return;
+            icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
+            elements.fullscreenToggle.setAttribute('aria-pressed', document.fullscreenElement ? 'true' : 'false');
+        }
+        async function toggleFullscreen() {
+            if (document.fullscreenElement) await document.exitFullscreen();
+            else await document.documentElement.requestFullscreen();
+            updateFullscreenIcon();
+        }
+        function setupAccentMood() {
+            const moods = ['aurora', 'sunset', 'forest'];
+            const saved = localStorage.getItem('iconAccentMood') || 'aurora';
+            document.body.setAttribute('data-accent', saved);
+            elements.paletteToggle?.addEventListener('click', () => {
+                const current = document.body.getAttribute('data-accent') || 'aurora';
+                const mood = moods[(moods.indexOf(current) + 1) % moods.length];
+                document.body.setAttribute('data-accent', mood);
+                localStorage.setItem('iconAccentMood', mood);
+                updateStatus(`Color mood: ${mood}`, 'info');
+                if (state.chartInstance) updateChartTheme();
+            });
+        }
+
+        const BASEMAP_DETAILS = ['clean', 'medium', 'heavy'];
+
+        // CARTO styles genuinely drop features; the keyless OSM tiles cannot, so
+        // there the road network is pushed back optically instead.
+        const CARTO_STYLE = {
+            clean:  { dark: 'dark_nolabels', light: 'light_nolabels' },
+            medium: { dark: 'dark_all',      light: 'light_all' },
+            heavy:  { dark: 'dark_all',      light: 'voyager' }
+        };
+        const OSM_TREATMENT = {
+            clean:  { opacity: 0.42, light: 'grayscale(1) contrast(0.58) brightness(1.14)',   dark: 'grayscale(1) contrast(0.62) brightness(0.88)' },
+            medium: { opacity: 0.74, light: 'grayscale(0.6) contrast(0.86) brightness(1.05)', dark: 'grayscale(0.5) contrast(0.88)' },
+            heavy:  { opacity: 1.00, light: '',                                               dark: '' }
+        };
+        const OSM_DARK_BASE = 'invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.55)';
+
+        function currentDetail() {
+            const d = state.basemapDetail || (CONFIG.basemap && CONFIG.basemap.detail) || 'medium';
+            return BASEMAP_DETAILS.includes(d) ? d : 'medium';
+        }
+
+        function resolveBasemap(theme) {
+            const key = ((CONFIG.basemap && CONFIG.basemap.cartoApiKey) || '').trim();
+            const detail = currentDetail();
+            if (key) {
+                const style = CARTO_STYLE[detail][theme === 'dark' ? 'dark' : 'light'];
+                const path = (style === 'voyager') ? 'rastertiles/voyager' : style;
+                return {
+                    url: `https://{s}.basemaps.cartocdn.com/${path}/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(key)}`,
+                    options: { subdomains: 'abcd', maxZoom: 20 },
+                    opacity: detail === 'clean' ? 0.9 : 1,
+                    filter: 'none',
+                    credit: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+                };
+            }
+            const t = OSM_TREATMENT[detail];
+            const isDark = theme === 'dark';
+            const extra = isDark ? t.dark : t.light;
+            const filter = isDark ? (OSM_DARK_BASE + (extra ? ' ' + extra : '')) : (extra || 'none');
+            return {
+                url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                options: { maxZoom: 19 },
+                opacity: t.opacity,
+                filter,
+                credit: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+            };
+        }
 
         function initializeBasemap(theme) {
             if (!state.map) return;
             if (state.baseLayer) state.map.removeLayer(state.baseLayer);
-            const url = theme === 'dark'
-                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-            state.baseLayer = L.tileLayer(url, { maxZoom:12, attribution:'', detectRetina:false, updateWhenIdle:true, keepBuffer:2 }).addTo(state.map);
+            const bm = resolveBasemap(theme);
+            document.body.style.setProperty('--bm-opacity', bm.opacity);
+            document.body.style.setProperty('--bm-filter', bm.filter);
+            // maxZoom comes from bm.options and matches what the provider serves.
+            // It must not sit below the map's own maxZoom or Leaflet hides the
+            // whole tile layer and the background goes blank.
+            state.baseLayer = L.tileLayer(bm.url, Object.assign({
+                maxZoom: 19, attribution: '', detectRetina: false, updateWhenIdle: true, keepBuffer: 2
+            }, bm.options)).addTo(state.map);
+            const creditEl = document.getElementById('basemapAttribution');
+            if (creditEl) creditEl.innerHTML = bm.credit;
+        }
+
+        function setBasemapDetail(detail, persist = true) {
+            if (!BASEMAP_DETAILS.includes(detail)) return;
+            state.basemapDetail = detail;
+            if (persist) localStorage.setItem('wrfBasemapDetail', detail);
+            document.querySelectorAll('#detailSeg .seg-btn').forEach(b => {
+                const on = b.dataset.detail === detail;
+                b.classList.toggle('active', on);
+                b.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            const key = ((CONFIG.basemap && CONFIG.basemap.cartoApiKey) || '').trim();
+            if (key) {
+                initializeBasemap(state.currentTheme);
+            } else {
+                const bm = resolveBasemap(state.currentTheme);
+                document.body.style.setProperty('--bm-opacity', bm.opacity);
+                document.body.style.setProperty('--bm-filter', bm.filter);
+            }
+            if (persist) updateStatus(`Map detail: ${detail}`, 'info');
+        }
+
+        function setupBasemapDetail() {
+            const seg = document.getElementById('detailSeg');
+            if (!seg) return;
+            seg.addEventListener('click', (e) => {
+                const btn = e.target.closest('.seg-btn');
+                if (btn && btn.dataset.detail) setBasemapDetail(btn.dataset.detail);
+            });
+            setBasemapDetail(currentDetail(), false);
         }
 
         function updateBaseMapTheme(theme) { initializeBasemap(theme); }
 
         // ==================== MAP ====================
+        // ---------- responsive helpers ----------
+        const COMPACT_MQ = window.matchMedia('(max-width: 900px)');
+        const DESKTOP_MIN_ZOOM = 5.2;
+        function isCompactLayout() { return COMPACT_MQ.matches; }
+
+        function isSaveData() {
+            const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            return !!(c && (c.saveData === true || /(^|-)2g$/.test(c.effectiveType || '')));
+        }
+        // The ICON grids are ~4.6 MB each; the bulk preload is skipped on
+        // phones/tablets and the timeseries is fetched on request instead.
+        function shouldSkipBulkPreload() { return isCompactLayout() || isSaveData(); }
+
+        // Zoom at which the whole ICON domain fits the current screen width.
+        function compactMinZoom() {
+            const [sw, ne] = CONFIG.gfsBounds;
+            const lonSpan = Math.max(0.01, ne[1] - sw[1]);
+            const w = Math.max(280, window.innerWidth);
+            const z = Math.log2((w * 360) / (lonSpan * 256));
+            return Math.max(2, Math.min(DESKTOP_MIN_ZOOM, Math.floor((z - 0.4) * 10) / 10));
+        }
+
+        function elHeight(sel, fallback) {
+            const el = document.querySelector(sel);
+            return el ? el.getBoundingClientRect().height : fallback;
+        }
+
+        function mapChromeInsets() {
+            if (!isCompactLayout()) return { top: 0, bottom: 0 };
+            const wrap = document.getElementById('panelsWrap');
+            let bottom = elHeight('.bottom-bar', 84);
+            if (wrap) {
+                const r = wrap.getBoundingClientRect();
+                bottom = Math.max(bottom, window.innerHeight - r.top);
+            }
+            return { top: elHeight('.top-bar', 56), bottom };
+        }
+
+        function fitDomainView(animate) {
+            if (!state.map) return;
+            if (isCompactLayout()) {
+                const ins = mapChromeInsets();
+                state.map.fitBounds(CONFIG.gfsBounds, {
+                    paddingTopLeft: [12, Math.round(ins.top) + 12],
+                    paddingBottomRight: [12, Math.round(Math.min(ins.bottom, window.innerHeight * 0.45)) + 12],
+                    animate: !!animate
+                });
+            } else {
+                state.map.setView([22.5, 82.5], 4, { animate: !!animate });
+            }
+        }
+
+        function applyResponsiveMapLimits() {
+            if (!state.map) return;
+            // a phone screen is too narrow to hold the whole domain at the desktop minimum
+            state.map.setMinZoom(isCompactLayout() ? compactMinZoom() : DESKTOP_MIN_ZOOM);
+        }
+
         function initializeMap() {
             state.map = L.map('map', {
                 attributionControl: false, zoomControl: false,
-                minZoom: 5.2, maxZoom: 10,
+                minZoom: DESKTOP_MIN_ZOOM, maxZoom: 10,
+                zoomSnap: 0.1, zoomDelta: 0.5,
                 maxBounds: CONFIG.mapViewBounds, maxBoundsViscosity: 1.0,
-                preferCanvas: true, fadeAnimation: false, markerZoomAnimation: false
+                preferCanvas: true, fadeAnimation: false, markerZoomAnimation: false,
+                tap: true, tapTolerance: 20, bounceAtZoomLimits: false
             });
-            L.control.zoom({ position: 'bottomright' }).addTo(state.map);
-            state.map.setView([22.5, 82.5], 4);
+            applyResponsiveMapLimits();
+            state.zoomControl = L.control.zoom({ position: isCompactLayout() ? 'topright' : 'bottomright' }).addTo(state.map);
+            fitDomainView(false);
         }
 
         function isInGFSDomain(lat, lon) {
@@ -1490,7 +2060,7 @@
             if (state.isPlaying) stopAnimation();
             const hrs = Math.floor((new Date() - CONFIG.forecastStart) / 3600000);
             showFrame(getNearestForecastHour(hrs));
-            state.map.setView([22.5, 82.5], 4);
+            fitDomainView(true);
             if (state.markers.clickMarker) { state.map.removeLayer(state.markers.clickMarker); state.markers.clickMarker = null; }
             updateStatus('Map reset', 'success');
         }
@@ -1578,8 +2148,32 @@
         }
 
         // ==================== PRELOAD ALL JSON ====================
+        // Fetch every forecast hour of one variable, reporting progress. Used on
+        // demand for the timeseries when the bulk preload has been skipped.
+        async function preloadVariableGrids(variable, onProgress) {
+            const fhList = CONFIG.forecastHours.slice();
+            let done = 0;
+            const CONCURRENCY = 4;
+            for (let i = 0; i < fhList.length; i += CONCURRENCY) {
+                await Promise.all(fhList.slice(i, i + CONCURRENCY).map(async (fh) => {
+                    const key = `${variable}_${fh}`;
+                    try {
+                        if (!state.allGrids[key]) {
+                            const r = await fetch(`icon_data/${variable}/${variable}_${fh.toString().padStart(3, '0')}.json`);
+                            if (r.ok) { const d = await r.json(); if (d?.values) state.allGrids[key] = d; }
+                        }
+                    } catch (e) { /* keep going, a missing hour just drops a point */ }
+                    finally { done++; if (onProgress) onProgress(done, fhList.length); }
+                }));
+            }
+        }
+
         async function preloadAllJSONFiles() {
             if (state.preloadStarted) return;
+            if (shouldSkipBulkPreload()) {
+                updateStatus('Data-saver mode · tap the map to read values', 'info');
+                return;
+            }
             state.preloadStarted = true;
             elements.globalPreloader.style.display = 'block';
             const variables = Object.keys(CONFIG.variables);
@@ -1604,7 +2198,7 @@
                 await new Promise(resolve => setTimeout(resolve, 10));
             }
             elements.globalPreloader.style.display = 'none';
-            updateStatus('The future isn’t fixed but it’s predictable', 'success');
+            updateStatus('Dashboard ready', 'success');
         }
 
         function updatePreloaderProgress() {
@@ -1677,6 +2271,22 @@
 
         function renderHourlyForecast(forecastData, variable) {
             const vc=CONFIG.variables[variable];
+            const values = forecastData.map(item => item.value);
+            const min = Math.min(...values), max = Math.max(...values);
+            const first = values[0], last = values[values.length - 1];
+            const trend = last - first > 0.5 ? 'Rising' : last - first < -0.5 ? 'Cooling' : 'Steady';
+            elements.forecastMin.textContent = `${min.toFixed(vc.precision)}${vc.unit}`;
+            elements.forecastMax.textContent = `${max.toFixed(vc.precision)}${vc.unit}`;
+            elements.forecastTrend.textContent = trend;
+            syncWeatherCenter(forecastData, variable);
+            const pulse = variable === 'RAIN'
+                ? (max >= 2 ? 'Rain chance is elevated in the forecast window.' : 'Mostly light precipitation expected.')
+                : variable === 'WIND'
+                    ? (max >= 10 ? 'Windy periods may develop during the forecast window.' : 'Winds remain generally manageable.')
+                    : variable === 'RH'
+                        ? (max >= 80 ? 'Moisture levels are high; skies may feel muggy.' : 'Humidity stays in a comfortable range.')
+                        : (max - min >= 8 ? 'A noticeable temperature swing is expected.' : 'Temperatures remain relatively steady.');
+            elements.weatherPulse.innerHTML = `<i class="fas fa-sparkles"></i><span>${pulse}</span>`;
             let html='';
             forecastData.forEach((item,index)=>{
                 const isNow=index===0;
@@ -1730,13 +2340,49 @@
             elements.chartStats.innerHTML=`<div class="stat-item"><div class="stat-label"><i class="fas fa-spinner fa-spin"></i> Loading</div><div class="stat-value">Please wait...</div><div class="stat-subvalue">Building from cache</div></div>`;
             elements.downloadCSVBtn.disabled=true; elements.exportChartBtn.disabled=true;
             const data=await getTimeseriesDataInstant(lat,lon,variable,gridI,gridJ);
+
+            // On phones/tablets the grids are not bulk-preloaded, so ask before
+            // pulling every forecast hour rather than spending the user's data.
+            const expected = CONFIG.forecastHours.length;
+            if (data.values.length < expected * 0.5 && shouldSkipBulkPreload()) {
+                const missing = expected - data.values.length;
+                elements.chartStats.innerHTML =
+                    `<div class="stat-item" style="grid-column:1/-1;">
+                        <div class="stat-label"><i class="fas fa-cloud-arrow-down"></i> Timeseries not loaded</div>
+                        <div class="stat-value" style="font-size:1rem;line-height:1.5;">
+                            ${data.values.length} of ${expected} forecast hours are cached.
+                        </div>
+                        <div class="stat-subvalue">Loading the rest fetches about ${missing} files. Use Wi-Fi if you can.</div>
+                        <button id="loadTimeseriesBtn" class="chart-btn download" style="margin-top:14px;width:100%;justify-content:center;">
+                            <i class="fas fa-download"></i> Load full timeseries
+                        </button>
+                    </div>`;
+                const btn = document.getElementById('loadTimeseriesBtn');
+                if (btn) {
+                    btn.addEventListener('click', async () => {
+                        btn.disabled = true;
+                        elements.chartLoading.style.display = 'flex';
+                        elements.loadingText.textContent = 'Loading timeseries...';
+                        elements.progressFill.style.width = '0%';
+                        await preloadVariableGrids(variable, (done, total) => {
+                            elements.progressFill.style.width = `${(done / total) * 100}%`;
+                            elements.loadingText.textContent = `Loading timeseries... ${done}/${total}`;
+                        });
+                        elements.chartLoading.style.display = 'none';
+                        delete state.allTimeseriesData[`${lat.toFixed(4)}_${lon.toFixed(4)}_${variable}`];
+                        showTimeseriesChart(lat, lon, variable, gridI, gridJ);
+                    }, { once: true });
+                }
+                if (data.values.length === 0) return;
+            }
+
             state.timeseriesData=data;
             elements.downloadCSVBtn.disabled=false; elements.exportChartBtn.disabled=false;
             if (!data||data.values.length===0) {
                 elements.chartSubtitle.textContent=`No data at (${lat.toFixed(4)}°, ${lon.toFixed(4)}°)`;
                 elements.chartStats.innerHTML=`<div class="stat-item"><div class="stat-label">No Data</div><div class="stat-value">--</div></div>`; return;
             }
-            updateChartUI();
+            if (!document.getElementById('loadTimeseriesBtn')) updateChartUI();
             createBeautifulChart();
         }
 
@@ -1884,7 +2530,30 @@
         }
 
         // ==================== EVENT LISTENERS ====================
+        function syncWeatherCenter(forecastData, variable) {
+            const values = forecastData.map(d => Number(d.value)).filter(Number.isFinite);
+            const health = Math.min(100, Math.round(values.length / 24 * 100));
+            elements.forecastHealth.style.width = `${Math.max(8, health)}%`;
+            elements.forecastHealthLabel.textContent = `${health}% data`;
+            const max = Math.max(...values), min = Math.min(...values);
+            let message = 'No significant threshold alerts in the selected forecast.', icon = 'fa-circle-check', warning = false;
+            if (variable === 'RAIN' && max >= 10) { message = `Heavy rain signal: up to ${max.toFixed(1)} mm/h.`; icon = 'fa-cloud-showers-heavy'; warning = true; }
+            else if (variable === 'WIND' && max >= 10) { message = `Strong wind signal: up to ${max.toFixed(1)} m/s.`; icon = 'fa-wind'; warning = true; }
+            else if (variable === 'T2' && max >= 35) { message = `Heat alert: temperatures may reach ${max.toFixed(1)}°C.`; icon = 'fa-temperature-high'; warning = true; }
+            else if (variable === 'T2' && min <= 5) { message = `Cold alert: temperatures may fall to ${min.toFixed(1)}°C.`; icon = 'fa-temperature-low'; warning = true; }
+            elements.alertCenter.className = `alert-center${warning ? ' warning' : ''}`;
+            elements.alertCenter.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+        }
+        function setupWeatherCenter() {
+            const saved = JSON.parse(localStorage.getItem('wrfFavoriteLocation') || 'null');
+            if (saved) elements.favoriteLocation.textContent = saved.name || 'Saved location';
+            elements.favoriteBtn.addEventListener('click', () => { if (!state.currentLocation) return; localStorage.setItem('wrfFavoriteLocation', JSON.stringify({ ...state.currentLocation, name: state.locationName || 'Selected location' })); elements.favoriteLocation.textContent = state.locationName || 'Selected location'; });
+            elements.clearFavoriteBtn.addEventListener('click', () => { localStorage.removeItem('wrfFavoriteLocation'); elements.favoriteLocation.textContent = 'No saved location'; });
+            elements.copyCoordsBtn.addEventListener('click', () => { if (state.currentLocation) navigator.clipboard?.writeText(`${state.currentLocation.lat.toFixed(5)}, ${state.currentLocation.lon.toFixed(5)}`); });
+            elements.shareBtn.addEventListener('click', () => { if (state.currentLocation) navigator.clipboard?.writeText(`${location.origin}${location.pathname}#loc=${state.currentLocation.lat.toFixed(4)},${state.currentLocation.lon.toFixed(4)}&name=${encodeURIComponent(state.locationName || 'Shared location')}`); });
+        }
         function setupEventListeners() {
+            setupWeatherCenter();
             elements.playBtn.addEventListener('click',toggleAnimation);
             elements.speedSelect.addEventListener('change',(e)=>{ state.currentSpeed=parseFloat(e.target.value); if(state.isPlaying){stopAnimation();startAnimation();} });
             elements.slider.addEventListener('input',(e)=>{ stopAnimation(); let fh=parseInt(e.target.value); fh=getNearestForecastHour(fh); elements.slider.value=fh; showFrame(fh); });
@@ -1894,6 +2563,9 @@
             elements.searchInput.addEventListener('input',(e)=>{ clearTimeout(state.searchTimeout); const q=e.target.value.trim(); if(q.length>=2) state.searchTimeout=setTimeout(()=>searchLocation(q),300); else elements.searchResults.style.display='none'; });
             elements.searchBtn.addEventListener('click',()=>{ const q=elements.searchInput.value.trim(); if(q)searchLocation(q); });
             elements.geoBtn.addEventListener('click',getUserLocation);
+            elements.fullscreenToggle.addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', updateFullscreenIcon);
+            setupAccentMood();
             document.addEventListener('click',(e)=>{ if(!elements.searchInput.contains(e.target)&&!elements.searchResults.contains(e.target))elements.searchResults.style.display='none'; });
             state.map.on('mousemove',(e)=>{ updateCoordinateDisplay(e.latlng.lat,e.latlng.lng); updateValueDisplay(e.latlng.lat,e.latlng.lng); });
             state.map.on('click',async(e)=>{
@@ -1904,11 +2576,25 @@
                 state.markers.clickMarker=L.marker([lat,lng],{icon:L.divIcon({className:'',html:'<div style="background:radial-gradient(circle,#00f0ff 40%,#0066ff);width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(0,240,255,0.5);"></div>',iconSize:[22,22]})}).addTo(state.map);
                 if(result.value!==null){
                     const vc=CONFIG.variables[elements.varSelect.value];
-                    state.markers.clickMarker.bindTooltip(`<b>${vc.name}:</b> ${result.value.toFixed(vc.precision)} ${vc.unit}<br><small>Grid [${result.gridIndex.i}, ${result.gridIndex.j}]</small><br><small>Click for timeseries ↗</small>`,{permanent:true,direction:'top',className:'value-tooltip'}).openTooltip();
+                    state.markers.clickMarker.bindTooltip(`<b>${vc.name}:</b> ${result.value.toFixed(vc.precision)} ${vc.unit}<br><small>Grid [${result.gridIndex.i}, ${result.gridIndex.j}]</small><br><small>${isCompactLayout() ? 'Tap this marker for the timeseries ↗' : 'Click for timeseries ↗'}</small>`,{permanent:true,direction:'top',className:'value-tooltip'}).openTooltip();
+                }
+                if(result.value!==null&&state.markers.clickMarker){
+                    state.markers.clickMarker.on('click',()=>{
+                        updateStatus('Loading timeseries...','info');
+                        showTimeseriesChart(lat,lng,elements.varSelect.value,result.gridIndex.i,result.gridIndex.j);
+                    });
                 }
                 updateValueDisplay(lat,lng);
-                if(result.gridIndex&&result.value!==null){updateStatus('Loading timeseries...','info');await showTimeseriesChart(lat,lng,elements.varSelect.value,result.gridIndex.i,result.gridIndex.j);}
+                if(result.gridIndex&&result.value!==null){
+                    if(isCompactLayout()){
+                        updateStatus('Tap the marker to open the timeseries','info');
+                    } else {
+                        updateStatus('Loading timeseries...','info');
+                        await showTimeseriesChart(lat,lng,elements.varSelect.value,result.gridIndex.i,result.gridIndex.j);
+                    }
+                }
             });
+            setupBasemapDetail();
             document.getElementById('resetMapBtn').addEventListener('click',resetMapView);
             elements.downloadCSVBtn.addEventListener('click',downloadTimeseriesCSV);
             elements.exportChartBtn.addEventListener('click',exportChartAsImage);
@@ -1952,23 +2638,157 @@
 
         document.addEventListener('DOMContentLoaded',initializeDashboard);
 
-        // ===== MOBILE PANEL TOGGLE =====
-        (function(){
-            const leftPanel=document.querySelector('.left-panel');
-            const rightPanel=document.querySelector('.right-panel');
-            const leftBtn=document.getElementById('mobileLeftBtn');
-            const rightBtn=document.getElementById('mobileRightBtn');
-            if(!leftBtn||!rightBtn)return;
-            function isMobile(){return window.innerWidth<=768;}
-            function updatePanels(){
-                if(!isMobile()){leftPanel.style.display='';rightPanel.style.display='';return;}
-                leftPanel.style.display=leftBtn.classList.contains('active')?'flex':'none';
-                rightPanel.style.display=rightBtn.classList.contains('active')?'flex':'none';
+        /* ============================================================
+           BOTTOM SHEET CONTROLLER (<= 900px)
+           Three snap points: peek -> half -> full.
+           Drag the grabber, tap it to cycle, or use arrow keys.
+           Above 900px the wrapper is display:contents and this is inert.
+           ============================================================ */
+        (function bottomSheet() {
+            const wrap = document.getElementById('panelsWrap');
+            const grab = document.getElementById('sheetGrabber');
+            const scroll = document.getElementById('sheetScroll');
+            if (!wrap || !grab) return;
+
+            const NAMES = ['peek', 'half', 'full'];
+            let snaps = [0, 0, 0];   // translateY px for peek / half / full
+            let idx = 1;             // start half open
+            let y = 0;
+            let dragging = false, startY = 0, startTrans = 0, moved = 0, lastY = 0, lastT = 0, velocity = 0;
+
+            function applyY(v) {
+                y = v;
+                wrap.style.transform = `translateY(${v}px)`;
             }
-            leftBtn.addEventListener('click',()=>{leftBtn.classList.toggle('active');rightBtn.classList.remove('active');updatePanels();});
-            rightBtn.addEventListener('click',()=>{rightBtn.classList.toggle('active');leftBtn.classList.remove('active');updatePanels();});
-            window.addEventListener('resize',updatePanels);
-            updatePanels();
+
+            function setIndex(i, animate = true) {
+                idx = Math.max(0, Math.min(2, i));
+                wrap.classList.toggle('dragging', !animate);
+                applyY(snaps[idx]);
+                wrap.dataset.state = NAMES[idx];
+                grab.setAttribute('aria-expanded', idx === 2 ? 'true' : 'false');
+                if (scroll) scroll.style.overflowY = idx === 0 ? 'hidden' : 'auto';
+                if (!animate) requestAnimationFrame(() => wrap.classList.remove('dragging'));
+            }
+
+            function layout() {
+                if (!COMPACT_MQ.matches) {
+                    wrap.style.height = '';
+                    wrap.style.bottom = '';
+                    wrap.style.transform = '';
+                    wrap.removeAttribute('data-state');
+                    if (scroll) scroll.style.overflowY = '';
+                    return;
+                }
+                const vh = window.innerHeight;
+                const bb = elHeight('.bottom-bar', 84);
+                const tb = elHeight('.top-bar', 56);
+                const H = Math.max(200, Math.round(vh - tb - bb - 10));
+                wrap.style.bottom = Math.round(bb) + 'px';
+                wrap.style.height = H + 'px';
+
+                const peekVisible = Math.round(grab.getBoundingClientRect().height) || 74;
+                const halfVisible = Math.min(H, Math.round(vh * 0.42));
+                snaps = [H - peekVisible, Math.max(0, H - halfVisible), 0];
+                setIndex(idx, false);
+            }
+
+            function nearestSnap(v) {
+                let best = 0, bd = Infinity;
+                snaps.forEach((sv, i) => { const d = Math.abs(sv - v); if (d < bd) { bd = d; best = i; } });
+                return best;
+            }
+
+            // --- pointer drag ---
+            grab.addEventListener('pointerdown', (e) => {
+                if (!COMPACT_MQ.matches) return;
+                dragging = true; moved = 0; velocity = 0;
+                startY = lastY = e.clientY; lastT = performance.now();
+                startTrans = y;
+                wrap.classList.add('dragging');
+                grab.setPointerCapture(e.pointerId);
+            });
+
+            grab.addEventListener('pointermove', (e) => {
+                if (!dragging) return;
+                const dy = e.clientY - startY;
+                moved = Math.max(moved, Math.abs(dy));
+                const now = performance.now();
+                if (now > lastT) velocity = (e.clientY - lastY) / (now - lastT);
+                lastY = e.clientY; lastT = now;
+                let v = startTrans + dy;
+                // soft resistance past the ends
+                if (v < snaps[2]) v = snaps[2] + (v - snaps[2]) * 0.25;
+                if (v > snaps[0]) v = snaps[0] + (v - snaps[0]) * 0.25;
+                applyY(v);
+                e.preventDefault();
+            });
+
+            function endDrag(e) {
+                if (!dragging) return;
+                dragging = false;
+                wrap.classList.remove('dragging');
+                try { grab.releasePointerCapture(e.pointerId); } catch (_) {}
+                if (moved < 8) { setIndex(idx === 2 ? 0 : idx + 1); return; }   // treated as a tap
+                let target = nearestSnap(y);
+                if (velocity > 0.6 && target > 0) target -= 1;                 // flicked down
+                else if (velocity < -0.6 && target < 2) target += 1;           // flicked up
+                setIndex(target);
+            }
+            grab.addEventListener('pointerup', endDrag);
+            grab.addEventListener('pointercancel', endDrag);
+
+            grab.addEventListener('keydown', (e) => {
+                if (!COMPACT_MQ.matches) return;
+                if (e.key === 'ArrowUp') { e.preventDefault(); setIndex(idx + 1); }
+                else if (e.key === 'ArrowDown') { e.preventDefault(); setIndex(idx - 1); }
+                else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIndex(idx === 2 ? 0 : idx + 1); }
+            });
+
+            // --- mirror live values into the collapsed peek row ---
+            const peekLoc = document.getElementById('peekLoc');
+            const peekTemp = document.getElementById('peekTemp');
+            function syncPeek() {
+                if (!COMPACT_MQ.matches) return;
+                const loc = document.getElementById('currentLocation');
+                const tmp = document.getElementById('currentTemp');
+                if (peekLoc && loc && loc.textContent.trim()) peekLoc.textContent = loc.textContent.trim();
+                if (peekTemp && tmp && tmp.textContent.trim()) peekTemp.textContent = tmp.textContent.trim();
+            }
+            setInterval(syncPeek, 1000);
+
+            // --- keep everything in step with the viewport ---
+            let t = null;
+            function onViewportChange(refit) {
+                clearTimeout(t);
+                t = setTimeout(() => {
+                    layout();
+                    applyResponsiveMapLimits();
+                    if (state.map) {
+                        state.map.invalidateSize();
+                        if (refit) fitDomainView(false);
+                    }
+                }, 120);
+            }
+            window.addEventListener('resize', () => onViewportChange(false));
+            window.addEventListener('orientationchange', () => onViewportChange(true));
+            if (window.visualViewport) window.visualViewport.addEventListener('resize', () => onViewportChange(false));
+
+            const onBreakpoint = () => {
+                if (state.map && state.zoomControl) {
+                    state.map.removeControl(state.zoomControl);
+                    state.zoomControl = L.control.zoom({
+                        position: COMPACT_MQ.matches ? 'topright' : 'bottomright'
+                    }).addTo(state.map);
+                }
+                onViewportChange(true);
+            };
+            if (COMPACT_MQ.addEventListener) COMPACT_MQ.addEventListener('change', onBreakpoint);
+            else COMPACT_MQ.addListener(onBreakpoint);
+
+            layout();
+            syncPeek();
+            window.addEventListener('load', () => { layout(); if (state.map) state.map.invalidateSize(); });
         })();
 
         window.ICONDashboard = { config:CONFIG, state, elements };

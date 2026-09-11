@@ -2793,5 +2793,19 @@
 
         window.ICONDashboard = { config:CONFIG, state, elements };
     </script>
+<script>
+    // Discourage the common keyboard shortcuts that open source or developer tools.
+    document.addEventListener('keydown', function (event) {
+        var key = event.key.toLowerCase();
+        var opensSource = event.ctrlKey && key === 'u';
+        var opensTools = event.key === 'F12' ||
+            (event.ctrlKey && event.shiftKey && (key === 'i' || key === 'j' || key === 'c'));
+
+        if (opensSource || opensTools) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }, true);
+</script>
 </body>
 </html>
